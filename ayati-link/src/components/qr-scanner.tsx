@@ -9,33 +9,30 @@ interface QrScannerProps {
 export default function QrScanner({ onResult, onClose }: QrScannerProps) {
   const [isScanning, setIsScanning] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [html5QrCode, setHtml5QrCode] = useState<any>(null);
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let qrCodeScanner: any;
+    let qrCodeScanner: import("html5-qrcode").Html5Qrcode | null = null;
 
     const startScanner = async () => {
       try {
-        const { Html5Qrcode } = await import("html5-qrcode"); // Dynamically import for client-side only
+        const { Html5Qrcode } = await import("html5-qrcode");
         qrCodeScanner = new Html5Qrcode("qr-reader");
-        setHtml5QrCode(qrCodeScanner);
         setIsScanning(true);
 
         await qrCodeScanner.start(
           { facingMode: "environment" },
           { fps: 10, qrbox: 250 },
-          (decodedText: string) => {
+          (decodedText) => {
             onResult(decodedText);
             stopScanner();
           },
-          (errorMessage: string) => {
+          (errorMessage) => {
             console.warn("QR scan error:", errorMessage);
           }
         );
-      } catch (err: unknown) {
+      } catch (err) {
         console.error("Error starting scanner:", err);
-        setError("Impossible d'accéder à la caméra. Vérifiez les permissions.");
+        setError("Cannot access the camera. Check permissions.");
         setIsScanning(false);
       }
     };

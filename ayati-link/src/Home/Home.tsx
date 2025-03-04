@@ -30,42 +30,46 @@ function Home() {
   // Keep the existing useEffect hooks and audio logic
 
   useEffect(() => {
-        let interval: NodeJS.Timeout | undefined;
-        if (isPlaying) {
-          if (audioRef.current) {
-            audioRef.current.play().catch(console.error);
-          }
-          interval = setInterval(() => {
-            setCurrentVerseIndex((prev) => (prev + 1) % verses.length);
-          }, 86400000);
-        } else {
-          if (audioRef.current) {
-            audioRef.current.pause();
-          }
-        }
-        return () => {
-          if (interval) clearInterval(interval);
-        };
-      }, [isPlaying]);
-    
-      useEffect(() => {
-        if (audioRef.current) {
-          audioRef.current.src = `/audio/${currentVerse.audioFile}`;
-          audioRef.current.load();
-          if (isPlaying) {
-            audioRef.current.play().catch(console.error);
-          }
-        }
-      }, [currentVerse.audioFile, isPlaying]);
-    
-      useEffect(() => {
-        if (audioRef.current) {
-          audioRef.current.muted = isMuted;
-        }
-      }, [isMuted]);
+    let interval: NodeJS.Timeout | undefined;
+    if (isPlaying) {
+      if (audioRef.current) {
+        audioRef.current.play().catch(console.error);
+      }
+      interval = setInterval(() => {
+        setCurrentVerseIndex((prev) => (prev + 1) % verses.length);
+      }, 86400000);
+    } else {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isPlaying]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.src = `/audio/${currentVerse.audioFile}`;
+      audioRef.current.load();
+      if (isPlaying) {
+        audioRef.current.play().catch(console.error);
+      }
+    }
+  }, [currentVerse.audioFile, isPlaying]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.muted = isMuted;
+    }
+  }, [isMuted]);
 
   return (
-    <main className={`min-h-screen flex flex-col relative ${theme === "dark" ? "text-white" : "text-black"}`}>
+    <main
+      className={`min-h-screen flex flex-col relative ${
+        theme === "dark" ? "text-white" : "text-black"
+      }`}
+    >
       {/* Background Image */}
       <div className="fixed inset-0 z-0">
         <img
@@ -73,7 +77,11 @@ function Home() {
           alt="Mosque Background"
           className="object-cover w-full h-full"
         />
-        <div className={`absolute inset-0 ${theme === "dark" ? "bg-black/70" : "bg-white/30"}`} />
+        <div
+          className={`absolute inset-0 ${
+            theme === "dark" ? "bg-black/60" : "bg-white/30"
+          }`}
+        />
       </div>
 
       <audio ref={audioRef} preload="auto" loop={false} muted={isMuted} />
@@ -83,9 +91,15 @@ function Home() {
         <div className="flex items-center gap-2">
           <Switch
             checked={theme === "dark"}
-            onCheckedChange={() => setTheme(theme === "dark" ? "light" : "dark")}
+            onCheckedChange={() =>
+              setTheme(theme === "dark" ? "light" : "dark")
+            }
           />
-          {theme === "dark" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+          {theme === "dark" ? (
+            <Moon className="h-5 w-5" />
+          ) : (
+            <Sun className="h-5 w-5" />
+          )}
         </div>
       </header>
 
@@ -95,10 +109,10 @@ function Home() {
           <img
             src="/logo.png"
             alt="Ayati Link"
-            className="object-contain w-[190px] h-[90px]"
+            className="object-contain w-[260px] h-[200px]"
           />
         </div>
-        
+
         <div className="max-w-4xl w-full p-6 mt-16">
           <h3 className="text-lg md:text-xl font-times text-center mb-2">
             L'interdiction
@@ -131,43 +145,67 @@ function Home() {
         {/* Controls */}
         <div className="relative z-10 flex justify-center items-center gap-4 mb-4">
           <Button
-            className="h-10 w-10 border-2 rounded-full"
+            className={`${
+              theme === "dark" ? "bg-black" : "bg-white"
+            } h-10 w-10 border-2 rounded-full`}
             variant="outline"
             size="icon"
-            onClick={() => setCurrentVerseIndex((prev) => (prev - 1 + verses.length) % verses.length)}
+            onClick={() =>
+              setCurrentVerseIndex(
+                (prev) => (prev - 1 + verses.length) % verses.length
+              )
+            }
           >
             <SkipBack className="h-4 w-4" />
           </Button>
-          
+
           <Button
-            className="h-10 w-10 border-2 rounded-full"
+            className={`${
+              theme === "dark" ? "bg-black" : "bg-white"
+            } h-10 w-10 border-2 rounded-full`}
             variant="outline"
             size="icon"
             onClick={() => setIsPlaying(!isPlaying)}
           >
-            {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+            {isPlaying ? (
+              <Pause className="h-4 w-4" />
+            ) : (
+              <Play className="h-4 w-4" />
+            )}
           </Button>
 
           <Button
-            className="h-10 w-10 border-2 rounded-full"
+            className={`${
+              theme === "dark" ? "bg-black" : "bg-white"
+            } h-10 w-10 border-2 rounded-full`}
             variant="outline"
             size="icon"
-            onClick={() => setCurrentVerseIndex((prev) => (prev + 1) % verses.length)}
+            onClick={() =>
+              setCurrentVerseIndex((prev) => (prev + 1) % verses.length)
+            }
           >
             <SkipForward className="h-4 w-4" />
           </Button>
 
           <Button
-            className="h-10 w-10 border-2 rounded-full"
+            className={`${
+              theme === "dark" ? "bg-black" : "bg-white"
+            } h-10 w-10 border-2 rounded-full`}
             variant="outline"
             size="icon"
             onClick={() => setIsMuted(!isMuted)}
           >
-            {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+            {isMuted ? (
+              <VolumeX className="h-4 w-4" />
+            ) : (
+              <Volume2 className="h-4 w-4" />
+            )}
           </Button>
 
           <Button
-            className="h-10 w-10 border-2 rounded-full"
+            className={`${
+              theme === "dark" ? "bg-black" : "bg-white"
+            } h-10 w-10 border-2 rounded-full`}
             variant="outline"
             size="icon"
             onClick={() => setShowQrCode(!showQrCode)}
@@ -176,21 +214,27 @@ function Home() {
           </Button>
         </div>
 
-        {/* Footer */}
+        {/* Update footer buttons */}
         <footer className="relative z-10 text-center text-sm">
           <div className="flex flex-col md:flex-row justify-center gap-4 mb-2">
-            <Button className="bg-white rounded-3xl text-black p-3 shadow-2xl font-medium text-sm">
+            <Button
+              className={`rounded-3xl p-3 shadow-2xl font-medium text-sm ${
+                theme === "dark"
+                  ? "bg-gray-800 text-gray-100 hover:bg-gray-700"
+                  : "bg-white text-black hover:bg-gray-100"
+              }`}
+            >
               AJOUTER À CHROME
             </Button>
-            <Button className="bg-white rounded-3xl p-3 text-black shadow-2xl font-medium text-sm">
+            <Button
+              className={`rounded-3xl p-3 shadow-2xl font-medium text-sm ${
+                theme === "dark"
+                  ? "bg-gray-800 text-gray-100 hover:bg-gray-700"
+                  : "bg-white text-black hover:bg-gray-100"
+              }`}
+            >
               S&apos;ABONNER
             </Button>
-          </div>
-          <div className="flex flex-col md:flex-row justify-center items-center gap-6">
-            <p className="max-w-[150px] font-extrabold text-medium">
-              A project by AYATI LINK © {new Date().getFullYear()}
-            </p>
-            <img src="/link.png" alt="link" className="w-[60px] h-[40px]" />
           </div>
         </footer>
       </div>
@@ -210,10 +254,17 @@ function Home() {
 
       {showQrCode && (
         <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
-          <div className="bg-background rounded-lg max-w-md w-full p-4">
+          <div
+            className={`rounded-lg max-w-md w-full p-4 ${
+              theme === "dark"
+                ? "bg-gray-900 text-gray-100"
+                : "bg-white text-gray-900"
+            }`}
+          >
             <h2 className="text-xl font-bold mb-4">Scannez ce QR Code</h2>
             <p className="mb-4 text-sm text-muted-foreground">
-              Scannez ce QR code pour ouvrir cette application sur votre appareil
+              Scannez ce QR code pour ouvrir cette application sur votre
+              appareil
             </p>
             <QrGenerator
               url={window.location.href}
